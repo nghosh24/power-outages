@@ -1,7 +1,21 @@
 # power-outages
 Project for Dsc 80 at UCSD
 
-Adding some edits as a test.
+# Introduction
+In this project, I examined a data set of major power outages in the U.S. from 2010 to 2016. 
 
-But for some reason not saving?
+# Data Cleaning and Exploratory Data Analysis
+
+# Assessment of Missingness
+
+# Hypothesis Testing
+
+# Framing a Prediction Problem
+
+# Baseline Model
+
+# Final Model
+
+# Fairness Analysis
+
 
