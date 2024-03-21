@@ -11,28 +11,28 @@ In this project, I will clean the data set and conduct exploratory data analysis
 Finally, I will explore my research question, which is that given the outage start time, and OTHER VARIABLES, can we predict how many people the outage will affect? This is important because when more customers are affected, this in turn leads to more resources spent towards restoring proper functionality.
 
 The original raw DataFrame contains 1534 rows, corresponding to 1534 outages, and 57 columns. However, I will only focus on a few of these columns for the sake of my analysis. 
-|Column	                 |Description|
-|---                     |---        |
-|`'YEAR'	`            |Year an outage occurred|
-|`'MONTH'`	                 |Month an outage occurred|
-|`'U.S._STATE'`	         |State the outage occurred in|
-|`'NERC.REGION'`	     |North American Electric Reliability Corporation (NERC) regions involved in the outage event|
-|`'CLIMATE.REGION'`	            |U.S. Climate regions as specified by National Centers for Environmental Information (9 Regions)|
-|`'ANOMALY.LEVEL'`	              |Oceanic El Niño/La Niña (ONI) index referring to the cold and warm episodes by season|
-|`'OUTAGE.START.DATE'`	          |Day of the year when the outage event started|
-|`'OUTAGE.START.TIME'`	          |Time of the day when the outage event started|
-|`'OUTAGE.RESTORATION.DATE'`	              |Day of the year when power was restored to all the customers|
-|`'OUTAGE.RESTORATION.TIME'`	     |Time of the day when power was restored to all the customers|
-|`'CAUSE.CATEGORY'`             |Categories of all the events causing the major power outages|
-|`'OUTAGE.DURATION'`            |Duration of outage events (in minutes)|
-|`'DEMAND.LOSS.MW'`             |Amount of peak demand lost during an outage event (in Megawatt) [but in many cases, total demand is reported]|
-|`'CUSTOMERS.AFFECTED'`         |Number of customers affected by the power outage event|
+|Column                |Description|
+|---                |---        |
+|`'YEAR'`                |Year an outage occurred|
+|`'MONTH'`                |Month an outage occurred|
+|`'U.S._STATE'`                |State the outage occurred in|
+|`'NERC.REGION'`                |North American Electric Reliability Corporation (NERC) regions involved in the outage event|
+|`'CLIMATE.REGION'`                |U.S. Climate regions as specified by National Centers for Environmental Information (9 Regions)|
+|`'ANOMALY.LEVEL'`                |Oceanic El Niño/La Niña (ONI) index referring to the cold and warm episodes by season|
+|`'OUTAGE.START.DATE'`                |Day of the year when the outage event started|
+|`'OUTAGE.START.TIME'`                |Time of the day when the outage event started|
+|`'OUTAGE.RESTORATION.DATE'`                |Day of the year when power was restored to all the customers|
+|`'OUTAGE.RESTORATION.TIME'`                |Time of the day when power was restored to all the customers|
+|`'CAUSE.CATEGORY'`                |Categories of all the events causing the major power outages|
+|`'OUTAGE.DURATION'`                |Duration of outage events (in minutes)|
+|`'DEMAND.LOSS.MW'`                |Amount of peak demand lost during an outage event (in Megawatt) [but in many cases, total demand is reported]|
+|`'CUSTOMERS.AFFECTED'`                |Number of customers affected by the power outage event|
 |`'TOTAL.PRICE'`                |Average monthly electricity price in the U.S. state (cents/kilowatt-hour)|
 |`'TOTAL.SALES'`                |Total electricity consumption in the U.S. state (megawatt-hour)|
-|`'TOTAL.CUSTOMERS'`            |Annual number of total customers served in the U.S. state|
-|`'POPPCT_URBAN'`           |	Percentage of the total population of the U.S. state represented by the urban population (in %)|
-|`'POPDEN_URBAN'`           |Population density of the urban areas (persons per square mile)|
-|`'AREAPCT_URBAN'`          |Percentage of the land area of the U.S. state represented by the land area of the urban areas (in %)|
+|`'TOTAL.CUSTOMERS'`                |Annual number of total customers served in the U.S. state|
+|`'POPPCT_URBAN'`                |Percentage of the total population of the U.S. state represented by the urban population (in %)|
+|`'POPDEN_URBAN'`                |Population density of the urban areas (persons per square mile)|
+|`'AREAPCT_URBAN'`                |Percentage of the land area of the U.S. state represented by the land area of the urban areas (in %)|
 
 # Data Cleaning and Exploratory Data Analysis
 The first step is to clean the data to make sure it is suitable for effective analysis. 
