@@ -132,9 +132,15 @@ Several columns contain missing data in the data set, but one of these columns t
 Additional data I could collect to determine if 'CUSTOMERS.AFFECTED' is MAR is to collect the individual reporting companies for each outage, and then conduct analysis to see whether the missingness of the customers is dependent on the company.
 
 ## Missingness Dependency
-To test missingness dependency, I will focus on the distribution of `OUTAGE.DURATION`. I will test this against the columns `CAUSE.CATEGORY` and ``
+To test missingness dependency, I will focus on the distribution of `OUTAGE.DURATION`. I will test this against the columns `CAUSE.CATEGORY` and `MONTH`.
 
+### Cause Category
 First, I examine the distribution of Cause Category when Duration is missing vs not missing.
+
+**Null Hypothesis:** The distribution of Cause Category is the same when Duration is missing vs not missing.
+
+**Alternate Hypothesis:** The distribution of Cause Category is different when Duration is missing vs not missing. 
+
 <iframe
   src="assets/cause_dist.html"
   width="800"
@@ -142,7 +148,7 @@ First, I examine the distribution of Cause Category when Duration is missing vs 
   frameborder="0"
 ></iframe>
 
-We find an observed TVD of 0.444 which has a p value of 0.0. The empirical distribution of the TVDs is shown below. At this value, we reject the null hypothesis in favor of the alternate hypothesis, which is that the distribution of Cause Category is significantly different when Duration is missing vs not, indicating that the missingness of Duration is dependent on Cause Category.
+ I found an observed TVD of 0.444 which has a p value of 0.0. The empirical distribution of the TVDs is shown below. At this value, I reject the null hypothesis in favor of the alternate hypothesis, which is that the distribution of Cause Category is significantly different when Duration is missing vs not, indicating that the missingness of Duration is dependent on Cause Category.
 <iframe
   src="assets/cause_tvd.html"
   width="800"
@@ -150,7 +156,28 @@ We find an observed TVD of 0.444 which has a p value of 0.0. The empirical distr
   frameborder="0"
 ></iframe>
 
-Next, I examined the dependency of Duration missing on another column, 'TOTAL.SALES'. 
+### Month
+Next, I examined the dependency of Duration missing on another column, `MONTH`. 
+**Null Hypothesis:** The distribution of Month is the same when Duration is missing vs not missing.
+
+**Alternate Hypothesis:** The distribution of Month is different when Duration is missing vs not missing. 
+
+Here is the distribution of Month when Duration is missing vs not missing.
+<iframe
+  src="assets/month_dist.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+I found an observed TVD of 0.143. This had a p value of 0.1756. The empirical distribution of the TVDs is shown below. At this value, I fail to reject the null hypothesis in favor of the alternate hypothesis. The distribution of Month is not significantly different when Duration is missing vs not, indicating that the missingness of Duration is not dependent on Month. 
+<iframe
+  src="assets/month_tvd.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
 
 # Hypothesis Testing
 I will be testing whether the outage duration is greater on average for severe weather outages over intentional attack outages. The relevant columns for this test are `OUTAGE.DURATION` and `CAUSE.CATEGORY`. I will only be using the outages where `CAUSE.CATEGORY` is equal to 'severe weather' or 'intentional attack'. 
