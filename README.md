@@ -11,6 +11,7 @@ First, I will clean the data set and conduct exploratory data analysis in order 
 Finally, I will explore my research question, which is what are the most important causes and characteristics of major power outages? I will try to build a model that predicts what the cause of a major power outage is in a certain place at a certain time. This is important because if energy companies can predict what will cause a power outage, they can enact preventative measures such as stronger infrastructure against weather, or better security to reduce attacks. 
 
 The original raw DataFrame contains 1534 rows, corresponding to 1534 outages, and 57 columns. However, I will only focus on a few of these columns for the sake of my analysis. 
+
 |Column                |Description|
 |---                |---        |
 |`'YEAR'`                |Year an outage occurred|
@@ -107,6 +108,7 @@ The plot below shows the relation between outage duration and cause category. It
 
 ### Grouping and Aggregates
 I grouped by NERC Region and then performed an aggregate function mean() to get the average severity metrics for each region. The severity metrics are Outage Duration, Customers Affected, and Demand Loss. The first few rows of this DataFrame are shown below: 
+
 | NERC.REGION   |   OUTAGE.DURATION |   CUSTOMERS.AFFECTED |   DEMAND.LOSS.MW |
 |:--------------|------------------:|---------------------:|-----------------:|
 | ASCC          |           nan     |                14273 |           35     |
@@ -116,6 +118,7 @@ I grouped by NERC Region and then performed an aggregate function mean() to get 
 | HECO          |           895.333 |               126729 |          466.667 |
 
 I also performed grouping with a pivot table, on Climate Region and Cause Category to see which regions experienced severe weather outages the most. The first few rows of this data frame are shown below:
+
 | CLIMATE.REGION     |   equipment failure |   fuel supply emergency |   intentional attack |   islanding |   public appeal |   severe weather |   system operability disruption |
 |:-------------------|--------------------:|------------------------:|---------------------:|------------:|----------------:|-----------------:|--------------------------------:|
 | Central            |                   7 |                       4 |                   38 |           3 |               2 |              135 |                              11 |
@@ -235,7 +238,7 @@ My evaluation metric will be F1 score since the classes (longer vs shorter) are 
 
 **Alternative Hypothesis:** The model is unfair. Its F1 score for longer outages is significantly different from the F1 score for shorter outages.
 
-I performed a permutation test with 10000 trials. My significance level is the standard 0.05, and I got a p_value of 0.0 so because this is below the significance level, I reject the null hypothesis. The model is significantly different in terms of F1 score for longer vs shorter outages.
+I performed a permutation test with 10000 trials. My significance level is the standard 0.05, and I got a p_value of 0.0002 so because this is below the significance level, I reject the null hypothesis. The model is significantly different in terms of F1 score for longer vs shorter outages.
 
 The figure below shows the distribution of the statistic. 
 <iframe
