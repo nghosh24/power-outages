@@ -8,7 +8,7 @@ The dataset includes information about the major outages, as well as geographica
 
 First, I will clean the data set and conduct exploratory data analysis in order to gain a basic understanding of the information provided. I will then analyze the missingness mechanisms and dependency of the data set. 
 
-Finally, I will explore my research question, which is that given the outage start time, and OTHER VARIABLES, can we predict how many people the outage will affect? This is important because when more customers are affected, this in turn leads to more resources spent towards restoring proper functionality.
+Finally, I will explore my research question, which is what are the most important causes and characteristics of major power outages? I will try to build a model that predicts what the cause of a major power outage is in a certain place at a certain time. This is important because if energy companies can predict what will cause a power outage, they can enact preventative measures such as stronger infrastructure against weather, or better security to reduce attacks. 
 
 The original raw DataFrame contains 1534 rows, corresponding to 1534 outages, and 57 columns. However, I will only focus on a few of these columns for the sake of my analysis. 
 |Column                |Description|
@@ -37,19 +37,19 @@ The original raw DataFrame contains 1534 rows, corresponding to 1534 outages, an
 # Data Cleaning and Exploratory Data Analysis
 The first step is to clean the data to make sure it is suitable for effective analysis. 
 ## Cleaning
-1. I start by dropping irrelevant columns and only keeping the features that I am interested in for analysis. These are: 'YEAR', 'MONTH', 'U.S._STATE', 'NERC.REGION', 'CLIMATE.REGION', 'ANOMALY.LEVEL',
-        'OUTAGE.START.DATE', 'OUTAGE.START.TIME', 'OUTAGE.RESTORATION.DATE', 'OUTAGE.RESTORATION.TIME',
-        'CAUSE.CATEGORY', 'OUTAGE.DURATION', 'DEMAND.LOSS.MW', 'CUSTOMERS.AFFECTED', 'TOTAL.PRICE',
-        'TOTAL.SALES', 'TOTAL.CUSTOMERS', 'POPPCT_URBAN', 'POPDEN_URBAN',
-        'AREAPCT_URBAN'.
+1. I start by dropping irrelevant columns and only keeping the features that I am interested in for analysis. These are: `YEAR`, `MONTH`, `U.S._STATE`, `NERC.REGION`, `CLIMATE.REGION`, `ANOMALY.LEVEL`,
+        `OUTAGE.START.DATE`, `OUTAGE.START.TIME`, `OUTAGE.RESTORATION.DATE`, `OUTAGE.RESTORATION.TIME`,
+        `CAUSE.CATEGORY`, `OUTAGE.DURATION`, `DEMAND.LOSS.MW`, `CUSTOMERS.AFFECTED`, `TOTAL.PRICE`,
+        `TOTAL.SALES`, `TOTAL.CUSTOMERS`, `POPPCT_URBAN`, `POPDEN_URBAN`, `AREAPCT_URBAN`.
 
-2. Next, I combine the OUTAGE.START.DATE and OUTAGE.START.TIME columns into one Timestamp object in an OUTAGE.START column. I do the same for OUTAGE.RESTORATION.DATE and OUTAGE.RESTORATION.TIME. I then dropped the old columns since all the relevant information is in OUTAGE.START and OUTAGE.RESTORATON.
+2. Next, I combine the `OUTAGE.START.DATE` and `OUTAGE.START.TIME` columns into one Timestamp object in an `OUTAGE.START` column. I do the same for `OUTAGE.RESTORATION.DATE` and `OUTAGE.RESTORATION.TIME`. I then dropped the old columns since all the relevant information is in `OUTAGE.START` and `OUTAGE.RESTORATON`.
 
-3. Next, I check my outcomes of interest, OUTAGE.DURATION, CUSTOMERS.AFFECTED, and DEMAND.LOSS.MW for values of 0, which are likely indicative of missing values since major outages wouldn't have a duration of 0 minutes, 0 customers affected, or 0 MW of energy lost. I replace 0 values in these columns with np.nan.
+3. Next, I check my outcomes of interest, `OUTAGE.DURATION`, `CUSTOMERS.AFFECTED`, and `DEMAND.LOSS.MW` for values of 0, which are likely indicative of missing values since major outages wouldn't have a duration of 0 minutes, 0 customers affected, or 0 MW of energy lost. I replace 0 values in these columns with np.nan.
 
-4. I combine 'POPPCT_URBAN', 'POPDEN_URBAN', and 'AREAPCT_URBAN' into one column, 'URBAN,' which accounts for the percent of a state's population is urban, the density of these areas, and normalizing for differences in state land that is urban. 
+4. I combine `POPPCT_URBAN`, `POPDEN_URBAN`, and `AREAPCT_URBAN` into one column, `URBAN`, which accounts for the percent of a state's population is urban, the density of these areas, and normalizing for differences in state land that is urban. 
 
 The first few rows of this cleaned DataFrame are shown below, with a portion of columns selected.
+
 | U.S._STATE   | NERC.REGION   | CAUSE.CATEGORY     |   OUTAGE.DURATION |   CUSTOMERS.AFFECTED | OUTAGE.START        |
 |:-------------|:--------------|:-------------------|------------------:|---------------------:|:--------------------|
 | Minnesota    | MRO           | severe weather     |              3060 |                70000 | 2011-07-01 17:00:00 |
@@ -127,9 +127,9 @@ I also performed grouping with a pivot table, on Climate Region and Cause Catego
 # Assessment of Missingness
 
 ## NMAR Analysis
-Several columns contain missing data in the data set, but one of these columns that is likely NMAR is 'CUSTOMERS.AFFECTED.' This is because the missingness is likely due to the data collection method, which aggregates data from a variety of sources. If certain companies did not report the number of customers that were affected, then there would be missing values. 
+Several columns contain missing data in the data set, but one of these columns that is likely NMAR is `CUSTOMERS.AFFECTED`. This is because the missingness is likely due to the data collection method, which aggregates data from a variety of sources. If certain companies did not report the number of customers that were affected, then there would be missing values. 
 
-Additional data I could collect to determine if 'CUSTOMERS.AFFECTED' is MAR is to collect the individual reporting companies for each outage, and then conduct analysis to see whether the missingness of the customers is dependent on the company.
+Additional data I could collect to determine if `CUSTOMERS.AFFECTED` is MAR is to collect the individual reporting companies for each outage, and then conduct analysis to see whether the missingness of the customers is dependent on the company.
 
 ## Missingness Dependency
 To test missingness dependency, I will focus on the distribution of `OUTAGE.DURATION`. I will test this against the columns `CAUSE.CATEGORY` and `MONTH`.
@@ -210,7 +210,7 @@ At the time of prediction, we would know the state, NERC region, climate region,
 # Baseline Model
 My model is a binary classifier using the features NERC Region, Anomaly level, Year, and Urban factor to predict whether a major outage is caused by severe weather or an intentional attack. This information would provide companies with how to approach energy infrastructure problems and decide whether to devote resources to better security against attacks or better protection from severe weather.
 
-The features are: 'NERC.REGION', 'ANOMALY.LEVEL', 'YEAR', and 'URBAN'.
+The features are: `NERC.REGION`, `ANOMALY.LEVEL`, `YEAR`, and `URBAN`.
 The predicted columns was converted to 1 for severe weather and 0 for intentional attack.
 
 The performance of this model was pretty good, with an r-squared of 0.764 on the test set. 
@@ -218,7 +218,7 @@ The F1 score was 0.831.
 
 
 # Final Model
-My final model incorporated these features: 'NERC.REGION', 'CLIMATE.REGION', 'ANOMALY.LEVEL', 'YEAR', 'MONTH', 'TOTAL.PRICE', 'TOTAL.SALES', 'TOTAL.CUSTOMERS', 'URBAN'. I used a DecisionTreeClassifier and was able to achieve an R-squared of 0.88 when testing on the test set. 
+My final model incorporated these features: `NERC.REGION`, `CLIMATE.REGION`, `ANOMALY.LEVEL`, `YEAR`, `MONTH`, `TOTAL.PRICE`, `TOTAL.SALES`, `TOTAL.CUSTOMERS`, `URBAN`. I used a DecisionTreeClassifier and was able to achieve an R-squared of 0.88 when testing on the test set. 
 
 I used GridSearchCV to find the best hyperparameters for the DecisionTreeClassifier.
 
