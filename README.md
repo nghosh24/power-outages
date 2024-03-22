@@ -49,8 +49,19 @@ The first step is to clean the data to make sure it is suitable for effective an
 
 4. I combine 'POPPCT_URBAN', 'POPDEN_URBAN', and 'AREAPCT_URBAN' into one column, 'URBAN,' which accounts for the percent of a state's population is urban, the density of these areas, and normalizing for differences in state land that is urban. 
 
+The first few rows of this cleaned DataFrame are shown below, with a portion of columns selected.
+| U.S._STATE   | NERC.REGION   | CAUSE.CATEGORY     |   OUTAGE.DURATION |   CUSTOMERS.AFFECTED | OUTAGE.START        |
+|:-------------|:--------------|:-------------------|------------------:|---------------------:|:--------------------|
+| Minnesota    | MRO           | severe weather     |              3060 |                70000 | 2011-07-01 17:00:00 |
+| Minnesota    | MRO           | intentional attack |                 1 |                  nan | 2014-05-11 18:38:00 |
+| Minnesota    | MRO           | severe weather     |              3000 |                70000 | 2010-10-26 20:00:00 |
+| Minnesota    | MRO           | severe weather     |              2550 |                68200 | 2012-06-19 04:30:00 |
+| Minnesota    | MRO           | severe weather     |              1740 |               250000 | 2015-07-18 02:00:00 |
+
 
 ## Exploratory Data Analysis
+
+### Univariate Analysis
 In my exploratory data analysis, I first perform univariate analysis to examine the distribution of single variables. 
 
 First, I wanted to see how the number of outages has changed over time.
@@ -60,7 +71,6 @@ First, I wanted to see how the number of outages has changed over time.
   height="600"
   frameborder="0"
 ></iframe>
-
 I also wanted to see the distribution of major causes of power outages.
 <iframe
   src="assets/major_causes.html"
@@ -68,7 +78,6 @@ I also wanted to see the distribution of major causes of power outages.
   height="600"
   frameborder="0"
 ></iframe>
-
 Then, I wanted to see the distribution of the number of outages by each U.S. state. 
 <iframe
   src="assets/map1.html"
@@ -77,25 +86,67 @@ Then, I wanted to see the distribution of the number of outages by each U.S. sta
   frameborder="0"
 ></iframe>
 
+### Bivariate Analysis
+I conducted many bivariate analyses, and the most significant results are shown below.
+
+I examined the relationship between Outage Duration and Customers Affected, two metrics of the severity of a power outage. I expected there to be a positive correlation, since major outages likely affect a lot of customers and have a long duration, but there was variability within this. There are many outages that affected a lot of customers but were not as long, indicating that Customers Affected might be a better metric for measuring outage severity.
+<iframe
+  src="assets/duration_cust.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+### Grouping and Aggregates
 
 # Assessment of Missingness
 
 ## NMAR Analysis
 Several columns contain missing data in the data set, but one of these columns that is likely NMAR is 'CUSTOMERS.AFFECTED.' This is because the missingness is likely due to the data collection method, which aggregates data from a variety of sources. If certain companies did not report the number of customers that were affected, then there would be missing values. 
 
-Additional data we could collect to determine if 'CUSTOMERS.AFFECTED' is MAR is to collect the individual reporting companies for each outage, and then conduct analysis to see whether the missingness of the customers is dependent on the company.
+Additional data I could collect to determine if 'CUSTOMERS.AFFECTED' is MAR is to collect the individual reporting companies for each outage, and then conduct analysis to see whether the missingness of the customers is dependent on the company.
 
 ## Missingness Dependency
-To test missingness dependency, we will focus on the distribution of 'OUTAGE.DURATION'. 
+To test missingness dependency, I will focus on the distribution of `OUTAGE.DURATION`. I will test this against the columns `CAUSE.CATEGORY` and ``
+
+First, I examine the distribution of Cause Category when Duration is missing vs not missing.
+<iframe
+  src="assets/cause_dist.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+We find an observed TVD of 0.444 which has a p value of 0.0. The empirical distribution of the TVDs is shown below. At this value, we reject the null hypothesis in favor of the alternate hypothesis, which is that the distribution of Cause Category is significantly different when Duration is missing vs not, indicating that the missingness of Duration is dependent on Cause Category.
+<iframe
+  src="assets/cause_tvd.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+Next, I examined the dependency of Duration missing on 
 
 # Hypothesis Testing
+I will be testing whether the outage duration is greater on average for severe weather outages over intentional attack outages. The relevant columns for this test are `OUTAGE.DURATION` and `CAUSE.CATEGORY`. I will only be using the outages where `CAUSE.CATEGORY` is equal to 'severe weather' or 'intentional attack'. 
+
 **Null Hypothesis:** On average, the duration of severe weather outages is the same as the duration of intentional attack outages.
 
 **Alternate Hypothesis:** On average, the duration of severe weather outages is greater than the duration of intentional attack outages.
 
 **Test Statistic:** Difference in means. Specifically, mean outage duration of severe weather - mean outage duration of intentional attacks.
 
-I performed a permutation test with 10,000 simulations in order to generate an empirical distribution of the test statisic under the null hypothesis.
+I performed a permutation test with 10,000 simulations in order to generate an empirical distribution of the test statisic under the null hypothesis. 
+
+The p-value I got was 0.0, so with a standard significance level of 0.05, we reject the null hypothesis because the results are statistically significant. We conclude that on average, the duration of severe weather outages is greater than intentional attack outages.
+
+The plot below shows the observed difference against the empirical distribution of differences from the permutation tests.
+<iframe
+  src="assets/h_test.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
 
 # Framing a Prediction Problem
 My model will try to predict the cause of a power outage. This will be a binary classification because we are only focusing on outages cause by severe weather or intentional attacks. 
@@ -107,16 +158,16 @@ At the time of prediction, we would know the state, NERC region, climate region,
 # Baseline Model
 My model is a binary classifier using the features U.S. State, NERC Region, Climate Category, and Anomaly Level to predict whether a major outage is caused by severe weather or an intentional attack. This information would provide companies with how to approach infrastructure problems related to energy. 
 
-The features are:
-- U.S. State, which is nominal
-- NERC Region, which is nominal
-- Climate Category, which is nominal
-- Anomaly Level, which is quantitative
+The features are: 'NERC.REGION', 'ANOMALY.LEVEL', 'YEAR', and 'URBAN'.
 
-The performance of this model was not great.
+The performance of this model was pretty good.
+
 
 # Final Model
+My final model incorporated these features: 'NERC.REGION', 'CLIMATE.REGION', 'ANOMALY.LEVEL', 'YEAR', 'MONTH', 'TOTAL.PRICE', 'TOTAL.SALES', 'TOTAL.CUSTOMERS', 'URBAN'. I used a DecisionTreeClassifier and was able to achieve an R-squared of 0.811 when testing on the test set. 
+
+I used a F1 score to measure the performance of my model. I saw that the F1 score increased from the baseline to the final, which indicates better performance of the final model.
 
 # Fairness Analysis
-
+I checked whether the model was fair for older vs younger outages, as in whether it occurred before 2008 or after 2008, since this is the median year. 
 
