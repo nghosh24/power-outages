@@ -218,10 +218,30 @@ The F1 score was 0.831.
 
 
 # Final Model
-My final model incorporated these features: 'NERC.REGION', 'CLIMATE.REGION', 'ANOMALY.LEVEL', 'YEAR', 'MONTH', 'TOTAL.PRICE', 'TOTAL.SALES', 'TOTAL.CUSTOMERS', 'URBAN'. I used a DecisionTreeClassifier and was able to achieve an R-squared of 0.811 when testing on the test set. 
+My final model incorporated these features: 'NERC.REGION', 'CLIMATE.REGION', 'ANOMALY.LEVEL', 'YEAR', 'MONTH', 'TOTAL.PRICE', 'TOTAL.SALES', 'TOTAL.CUSTOMERS', 'URBAN'. I used a DecisionTreeClassifier and was able to achieve an R-squared of 0.88 when testing on the test set. 
 
-I used a F1 score to measure the performance of my model. I got an F1 score of 0.846, and I saw that the F1 score increased from the baseline to the final, which indicates better performance of the final model. 
+I used GridSearchCV to find the best hyperparameters for the DecisionTreeClassifier.
+
+I used a F1 score to measure the performance of my model. I got an F1 score of 0.905, and since the F1 score increased from the baseline to the final, this indicates better performance of the final model. 
 
 # Fairness Analysis
-I checked whether the model was fair for older vs younger outages, as in whether it occurred before 2008 or after 2008, since this is the median year. 
+My groups for the fairness analysis are longer vs shorter outages. This is defined as outages that are greater than 3000 minutes, vs outages that are less than 3000 minutes. 
+
+I decided on these groups because the cause category (which is predicted by my model) can greatly determine the outage duration. We want to make sure that the model can predict the classification well because this can inform energy companies on what to focus on to prevent longer outages. 
+
+My evaluation metric will be F1 score since the classes (longer vs shorter) are imbalanced, and this metric accounts for that imbalance, while also incorporating the precision and recall. I will use permutation tests to calculate the F1 score for longer vs shorter outages (that are randomly shuffled) and then compare this absolute difference to my initial observed absolute difference. 
+
+**Null Hypothesis:** The model is fair. Its F1 scores for longer and shorter outages are roughly the same, and any differences are due to random chance.
+
+**Alternative Hypothesis:** The model is unfair. Its F1 score for longer outages is significantly different from the F1 score for shorter outages.
+
+I performed a permutation test with 10000 trials. My significance level is the standard 0.05, and I got a p_value of 0.0 so because this is below the significance level, I reject the null hypothesis. The model is significantly different in terms of F1 score for longer vs shorter outages.
+
+The figure below shows the distribution of the statistic. 
+<iframe
+  src="assets/fairness.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
 
