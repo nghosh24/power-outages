@@ -215,7 +215,9 @@ At the time of prediction, we would know the state, NERC region, climate region,
 # Baseline Model
 My model is a binary classifier using the features NERC Region, Anomaly level, Year, and Urban factor to predict whether a major outage is caused by severe weather or an intentional attack. This information would provide companies with how to approach energy infrastructure problems and decide whether to devote resources to better security against attacks or better protection from severe weather.
 
-The features are: `NERC.REGION`, `ANOMALY.LEVEL`, `YEAR`, and `URBAN`.
+The features are: `NERC.REGION` (nominal), `ANOMALY.LEVEL` (quantitative), `YEAR` (ordinal), and `URBAN` (quantitative).
+I chose these because `NERC.REGION` indicates the energy infrastructure and regulation of a region, `ANOMALY.LEVEL` provides climate conditions that might create more severe weather, `YEAR` to account for changes over time, and `URBAN` since areas with a higher urban factor have more densely populated areas which could have more strains on enery and are impacted more by major power outages. 
+
 The predicted columns was converted to 1 for severe weather and 0 for intentional attack.
 
 The performance of this model was pretty good, with an r-squared of 0.764 on the test set. 
@@ -225,7 +227,12 @@ The F1 score was 0.831.
 # Final Model
 My final model incorporated these features: `NERC.REGION`, `CLIMATE.REGION`, `ANOMALY.LEVEL`, `YEAR`, `MONTH`, `TOTAL.PRICE`, `TOTAL.SALES`, `TOTAL.CUSTOMERS`, `URBAN`. I used a DecisionTreeClassifier and was able to achieve an R-squared of 0.88 when testing on the test set. 
 
-I used GridSearchCV to find the best hyperparameters for the DecisionTreeClassifier.
+I added `CLIMATE.REGION` (nominal) becaause certain climate regions are more prone to be hit by severe weather. `MONTH` (ordinal) incorporates changing weather with the seasons, `TOTAL.PRICE` (quantitative) and `TOTAL.SALES` (quantitative) incorporate economic factors that are driving energy consumption. `TOTAL.CUSTOMERS` (quantitative) adjusts for the fact that some areas are servicing more customers, so the higher usage could lead to more drastic outages.
+
+I used GridSearchCV to find the best hyperparameters for the DecisionTreeClassifier. These were:
+- criterion: 'gini'
+- max_depth: 4
+- min_samples_split: 2
 
 I used a F1 score to measure the performance of my model. I got an F1 score of 0.905, and since the F1 score increased from the baseline to the final, this indicates better performance of the final model. 
 
