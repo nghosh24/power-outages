@@ -230,11 +230,11 @@ My final model incorporated these features: `NERC.REGION`, `CLIMATE.REGION`, `AN
 I added `CLIMATE.REGION` (nominal) becaause certain climate regions are more prone to be hit by severe weather. `MONTH` (ordinal) incorporates changing weather with the seasons, `TOTAL.PRICE` (quantitative) and `TOTAL.SALES` (quantitative) incorporate economic factors that are driving energy consumption. `TOTAL.CUSTOMERS` (quantitative) adjusts for the fact that some areas are servicing more customers, so the higher usage could lead to more drastic outages.
 
 I used GridSearchCV to find the best hyperparameters for the DecisionTreeClassifier. These were:
-- criterion: 'gini'
-- max_depth: 4
-- min_samples_split: 2
+- criterion: 'entropy'
+- max_depth: 10
+- min_samples_split: 5
 
-I used a F1 score to measure the performance of my model. I got an F1 score of 0.905, and since the F1 score increased from the baseline to the final, this indicates better performance of the final model. 
+I used a F1 score to measure the performance of my model. I got an F1 score of 0.902, and since the F1 score increased from the baseline to the final, this indicates better performance of the final model. 
 
 # Fairness Analysis
 My groups for the fairness analysis are longer vs shorter outages. This is defined as outages that are greater than 3000 minutes, vs outages that are less than 3000 minutes. 
@@ -247,7 +247,7 @@ My evaluation metric will be F1 score since the classes (longer vs shorter) are 
 
 **Alternative Hypothesis:** The model is unfair. Its F1 score for longer outages is significantly different from the F1 score for shorter outages.
 
-I performed a permutation test with 10000 trials. My significance level is the standard 0.05, and I got a p_value of 0.0002 so because this is below the significance level, I reject the null hypothesis. The model is significantly different in terms of F1 score for longer vs shorter outages.
+I performed a permutation test with 10000 trials. My significance level is the standard 0.05, and I got a p_value of 0.0 so because this is below the significance level, I reject the null hypothesis. The model is significantly different in terms of F1 score for longer vs shorter outages.
 
 The figure below shows the distribution of the statistic. 
 <iframe
