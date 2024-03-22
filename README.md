@@ -6,7 +6,7 @@ In this project, I examined a data set of major power outages in the U.S. from J
 
 The dataset includes information about the major outages, as well as geographical, climatic, land-use characteristics, electricity consumption patterns and economic characteristics of the states affected by the outages. 
 
-In this project, I will clean the data set and conduct exploratory data analysis in order to gain a basic understanding of the information provided. I will then analysze the missingness mechanisms and dependency of the data set. 
+First, I will clean the data set and conduct exploratory data analysis in order to gain a basic understanding of the information provided. I will then analyze the missingness mechanisms and dependency of the data set. 
 
 Finally, I will explore my research question, which is that given the outage start time, and OTHER VARIABLES, can we predict how many people the outage will affect? This is important because when more customers are affected, this in turn leads to more resources spent towards restoring proper functionality.
 
@@ -97,7 +97,32 @@ I examined the relationship between Outage Duration and Customers Affected, two 
   frameborder="0"
 ></iframe>
 
+The plot below shows the relation between outage duration and cause category. It shows that some of the outages with the longest duration were due to a fuel supply emergency.
+<iframe
+  src="assets/duration_cause.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
 ### Grouping and Aggregates
+I grouped by NERC Region and then performed an aggregate function mean() to get the average severity metrics for each region. The severity metrics are Outage Duration, Customers Affected, and Demand Loss. The first few rows of this DataFrame are shown below: 
+| NERC.REGION   |   OUTAGE.DURATION |   CUSTOMERS.AFFECTED |   DEMAND.LOSS.MW |
+|:--------------|------------------:|---------------------:|-----------------:|
+| ASCC          |           nan     |                14273 |           35     |
+| ECAR          |          5603.31  |               256354 |         1314.48  |
+| FRCC          |          4271.12  |               375007 |         1072.6   |
+| FRCC, SERC    |           372     |                  nan |          nan     |
+| HECO          |           895.333 |               126729 |          466.667 |
+
+I also performed grouping with a pivot table, on Climate Region and Cause Category to see which regions experienced severe weather outages the most. The first few rows of this data frame are shown below:
+| CLIMATE.REGION     |   equipment failure |   fuel supply emergency |   intentional attack |   islanding |   public appeal |   severe weather |   system operability disruption |
+|:-------------------|--------------------:|------------------------:|---------------------:|------------:|----------------:|-----------------:|--------------------------------:|
+| Central            |                   7 |                       4 |                   38 |           3 |               2 |              135 |                              11 |
+| East North Central |                   3 |                       5 |                   20 |           1 |               2 |              104 |                               3 |
+| Northeast          |                   5 |                      14 |                  135 |           1 |               4 |              176 |                              15 |
+| Northwest          |                   2 |                       1 |                   89 |           5 |               2 |               29 |                               4 |
+| South              |                  10 |                       7 |                   28 |           2 |              42 |              113 |                              27 |
 
 # Assessment of Missingness
 
@@ -125,7 +150,7 @@ We find an observed TVD of 0.444 which has a p value of 0.0. The empirical distr
   frameborder="0"
 ></iframe>
 
-Next, I examined the dependency of Duration missing on 
+Next, I examined the dependency of Duration missing on another column, 'TOTAL.SALES'. 
 
 # Hypothesis Testing
 I will be testing whether the outage duration is greater on average for severe weather outages over intentional attack outages. The relevant columns for this test are `OUTAGE.DURATION` and `CAUSE.CATEGORY`. I will only be using the outages where `CAUSE.CATEGORY` is equal to 'severe weather' or 'intentional attack'. 
@@ -153,20 +178,22 @@ My model will try to predict the cause of a power outage. This will be a binary 
 
 The metric I am using the evaluate my model is the F1 score, because there is an imbalance within the classes so this will most effectively balance that out and incorporate both the precision and recall.
 
-At the time of prediction, we would know the state, NERC region, climate region, anomaly level, and SOMETHING ELSE. This information will allow us to predict what the cause of a major power outage is.
+At the time of prediction, we would know the state, NERC region, climate region, anomaly level, year, month, total sales, total price, total customers, and the urban factor. This information will allow us to predict what the cause of a major power outage is.
 
 # Baseline Model
-My model is a binary classifier using the features U.S. State, NERC Region, Climate Category, and Anomaly Level to predict whether a major outage is caused by severe weather or an intentional attack. This information would provide companies with how to approach infrastructure problems related to energy. 
+My model is a binary classifier using the features NERC Region, Anomaly level, Year, and Urban factor to predict whether a major outage is caused by severe weather or an intentional attack. This information would provide companies with how to approach energy infrastructure problems and decide whether to devote resources to better security against attacks or better protection from severe weather.
 
 The features are: 'NERC.REGION', 'ANOMALY.LEVEL', 'YEAR', and 'URBAN'.
+The predicted columns was converted to 1 for severe weather and 0 for intentional attack.
 
-The performance of this model was pretty good.
+The performance of this model was pretty good, with an r-squared of 0.764 on the test set. 
+The F1 score was 0.831.
 
 
 # Final Model
 My final model incorporated these features: 'NERC.REGION', 'CLIMATE.REGION', 'ANOMALY.LEVEL', 'YEAR', 'MONTH', 'TOTAL.PRICE', 'TOTAL.SALES', 'TOTAL.CUSTOMERS', 'URBAN'. I used a DecisionTreeClassifier and was able to achieve an R-squared of 0.811 when testing on the test set. 
 
-I used a F1 score to measure the performance of my model. I saw that the F1 score increased from the baseline to the final, which indicates better performance of the final model.
+I used a F1 score to measure the performance of my model. I got an F1 score of 0.846, and I saw that the F1 score increased from the baseline to the final, which indicates better performance of the final model. 
 
 # Fairness Analysis
 I checked whether the model was fair for older vs younger outages, as in whether it occurred before 2008 or after 2008, since this is the median year. 
